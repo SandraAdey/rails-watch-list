@@ -1,15 +1,9 @@
-<div class="list-banner">
-  <h1>Create your list</h1>
-</div>
 
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <%= simple_form_for(@list) do |f| %>
-        <%= f.input :name, placeholder: 'Add a list name' %>
-        <%= f.input :imageUrl, placeholder: 'Add an image URL' %>
-        <%= f.submit "Create", class: "btn btn-primary" %>
-      <% end %>
-    </div>
-  </div>
+<div class="container mt-3">
+  <h1>Add a new list</h1>
+  <%= simple_form_for @list do |f| %>
+    <%= f.input :name %>
+    <%= f.input :photo, as: :file %>
+    <%= f.submit 'Add a new list', class: "btn btn-primary" %>
+  <% end %>
 </div>

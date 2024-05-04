@@ -1,34 +1,35 @@
 class BookmarksController < ApplicationController
-  before_action :find_list, only: [ :new, :create ]
+  before_action :set_list, only: [:new, :create]
 
-def new
-  @bookmark = Bookmark.new
-end
-
-def create
-  @bookmark = Bookmark.new(bookmark_params)
-  @bookmark.list = @list
-  if @bookmark.save
-    redirect_to list_path(@list)
-  else
-    render template: "lists/show"
+  def new
+    @bookmark = Bookmark.new
+    # all the movies our list DOESNT have:
+    @movies = Movie.where.not(id: @list.movies).order(title: :asc)
   end
-end
 
-def destroy
-  @bookmark = Bookmark.find(params[:id])
-  @bookmark.destroy
-  redirect_to root_path
-end
+  def create
+    @bookmark = Bookmark.new(bookmark_params)
+    @bookmark.list = @list
+    if @bookmark.save
+      redirect_to list_path(@list)
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
 
-private
+  def destroy
+    @bookmark = Bookmark.find(params[:id])
+    @bookmark.destroy
+    redirect_to list_path(@bookmark.list)
+  end
 
-def find_list
-  @list = List.find(params[:list_id])
-end
+  private
 
-def bookmark_params
-  params.require(:bookmark).permit(:comment, :movie_id)
-end
+  def bookmark_params
+    params.require(:bookmark).permit(:comment, :wl_movie_id, :wl_list_id)
+  end
 
+  def set_list
+    @list = List.find(params[:list_id])
+  end
 end
